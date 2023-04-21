@@ -17,13 +17,9 @@ var currentVirtualHosts []string
 var opnsenseProxyAddress string
 
 func main() {
-	hostname := os.Getenv("HOST_HOSTNAME")
-	if hostname == "" {
-		log.Fatalf("HOST_HOSTNAME is not set")
-	}
-	domainName := os.Getenv("DOMAIN_NAME")
-	if domainName == "" {
-		log.Fatalf("DOMAIN_NAME is not set")
+	fqdn := os.Getenv("FQDN")
+	if fqdn == "" {
+		log.Fatalf("FQDN is not set")
 	}
 	opnsenseProxyAddress = os.Getenv("OPNSENSE_PROXY_ADDRESS")
 	if opnsenseProxyAddress == "" {
@@ -33,7 +29,7 @@ func main() {
 		opnsenseProxyAddress = fmt.Sprintf("http://%v", opnsenseProxyAddress)
 	}
 	currentVirtualHosts = []string{}
-	hostFQDN = fmt.Sprintf("%v-internal-reverse-proxy.%v", hostname, domainName)
+	hostFQDN = fmt.Sprintf("internal-reverse-proxy-%v", fqdn)
 	scheduler := gocron.NewScheduler(time.UTC)
 	_, err := scheduler.Every(1).Minutes().Do(updateVirtualHosts)
 	if err != nil {
